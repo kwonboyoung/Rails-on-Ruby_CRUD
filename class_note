@@ -1,0 +1,81 @@
+# rails g(nerate) controller user
+# 1. routes
+# 2. controller
+# 3. view
+
+# rails g model user
+# t.string : email
+# t.string : password
+
+# 회원가입
+# 0. (root)user/index => 모든 유저 정보를 나열해준다.
+- 회원가입 링크, 각각의 회원 정보 옆에는 수정&삭제 링크
+# 1. user/new => 회원가입페이지 form
+# 2. user/create => 회원가입완료
+# 3. user/modify/:id => 자신의 정보를 수정하는 페이지
+# 4. user/update => 수정완료
+# 5. user/destroy/:id => 유저정보삭제
+
+# 로그인
+# 0. 로그인으로 받아온 정보의 유저가 db에 있는지 확인?
+# 1. 만약에 있다면, 비밀번호가 맞는지 확인?
+
+params[:email]
+
+if User.exists?(email: params[:email])
+    user = User.find_by(email: params[:email])
+    if user.password == params[:password]
+        session[:user_id] = user.id
+    end
+end
+
+
+# 2. 그것도 만약에 맞다면, 로그인 시키기
+
+
+
+####################################################
+kby0618:~/workspace $ rails generate controller user => 이건 간단하게
+
+지울 때, rails destroy controller user
+같은 문법 : 'rails d controller user
+
+kby0618:~/workspace $ rails generate controller user index new create => 이건 한번에 만들어줌
+
+# 데이터 테이블을 만들겠다.
+kby0618:~/workspace $ rails g model user
+
+db/migrate 를 보면 만들어진 속성 볼 수 있다. 그걸 수정하고
+kby0618:~/workspace $ rake db:migrate
+
+
+console 창에...
+INSERT INTO "users" ("email", "password", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "asdf@asdf.com"], 
+
+["password", "asdf"], ["created_at", "2017-11-09 06:26:43.240412"], ["updated_at", "2017-11-09 06:26:43.240412"]]
+확인할 수 있다.
+
+db 확인하려면
+새로운 bash창 띄워서
+kby0618:~/workspace $ rails c
+
+2.3.4 :002 > User.all
+
+
+* gemfile에
+ 마지막 줄에 이거 추가 (웹 상에서 db를 확인할 수 있도록)
+ gem 'rails_db'
+
+2.3.4 :002 > exit
+kby0618:~/workspace $ bundle install
+
+
+* 비밀번호 암호화 (md5 사용)
+kby0618:~/workspace $ irb
+2.3.4 :001 > require 'digest'
+
+
+* db 자체 날리기
+kby0618:~/workspace $ rake db:drop
+* db날라갔다가 다시 migrate 해주므로 깨끗한 테이블이 될 것임.
+kby0618:~/workspace $ rake db:migrate
